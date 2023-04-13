@@ -9,7 +9,6 @@ const router = new Router();
 
 const routeGuard = require('./../middleware/route-guard');
 
-// All recipe categories
 router.get('/', routeGuard, (req, res, next) => {
   Recipe.find()
     .then((recipes) => {
@@ -20,25 +19,18 @@ router.get('/', routeGuard, (req, res, next) => {
     });
 });
 
-// Recipes by category
 router.get('/category', routeGuard, (req, res, next) => {
   let recipesFromDb;
-  // Perform some checks on some variables that could be there or not -> The query params
   const { category } = req.query;
   console.log('THIS IS THE CATEGORY: ', category);
   Recipe.find({ category })
     .then((recipes) => {
-      //console.log({ recipes, categoryParent: category });
       recipesFromDb = recipes;
       return Favorite.find({ user: req.user._id });
     })
     .then((favorites) => {
       console.log('FAVORITES: ', favorites);
       const jointFavorites = favorites.join(''); // map method
-      /*const userFavorite = favorites.map((elements) => {
-        return elements._id;
-      });
-      console.log(userFavorite);*/
 
       console.log('JOINT FAVORITES: ', jointFavorites);
       const recipesToRender = recipesFromDb.map((recipe) => {
@@ -52,7 +44,7 @@ router.get('/category', routeGuard, (req, res, next) => {
             instruction: recipe.instruction,
             alkalinefood: recipe.alkalinefood,
             favorited: true
-          }; // spread operator instead
+          };
         } else {
           return {
             _id: recipe._id,
@@ -66,7 +58,6 @@ router.get('/category', routeGuard, (req, res, next) => {
           };
         }
       });
-      // console.log(recipesToRender);
       res.render('recipes/category', {
         recipesToRender,
         categoryParent: category
@@ -77,7 +68,6 @@ router.get('/category', routeGuard, (req, res, next) => {
     });
 });
 
-// Single recipe
 router.get('/category/:id', routeGuard, (req, res, next) => {
   const id = req.params.id;
   const userId = req.user._id;
@@ -103,7 +93,6 @@ router.get('/category/:id', routeGuard, (req, res, next) => {
     });
 });
 
-// Ingredients search
 router.get('/search', routeGuard, (req, res, next) => {
   const { alkalinefood } = req.query;
   Recipe.find({ alkalinefood })
@@ -125,7 +114,6 @@ router.get('/search', routeGuard, (req, res, next) => {
     });
 });
 
-// Render list of alkaline food
 router.get('/food-list', routeGuard, (req, res, next) => {
   res.render('recipes/food-list');
 });

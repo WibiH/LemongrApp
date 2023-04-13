@@ -15,12 +15,10 @@ const storage = new multerStorageCloudinary.CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
-// Render recipes create page
 publicationRouter.get('/', routeGuardMiddleware, (req, res, next) => {
   res.render('recipes/create-recipe');
 });
 
-// Create recipe
 publicationRouter.post(
   '/',
   routeGuardMiddleware,
@@ -30,7 +28,6 @@ publicationRouter.post(
     const picture = req.file.path;
     const { category, title, ingredients, instruction } = req.body;
     const author = req.user._id;
-    // if my ingredients string is 'egg, milk, flour' -> ['egg','milk','flour']
     console.log('INGREDIENTS', ingredients);
     const splitIngredientList = ingredients.split(',');
     Recipe.create({
@@ -43,7 +40,7 @@ publicationRouter.post(
     })
       .then((publications) => {
         console.log(publications);
-        res.redirect('/create/published'); //everything after the localhost
+        res.redirect('/create/published');
       })
       .catch((error) => {
         next(error);
@@ -51,11 +48,9 @@ publicationRouter.post(
   }
 );
 
-// Render recipes published by user and add them to the /published site
 publicationRouter.get('/published', routeGuardMiddleware, (req, res, next) => {
   Recipe.find({ author: req.user._id })
     .sort({ createdAt: -1 })
-    //.populate('publication')
     .then((publications) => {
       console.log('publication', { publications });
       res.render('recipes/publications', { publications });
