@@ -1,9 +1,12 @@
 {
+  "homepage": "http://WibiH.github.io/LemongrApp",
   "name": "lemon",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "node ./app",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "dev": "nodemon ./app -e js,hbs,scss",
     "dev:debug": "DEBUG=lemon* npm run dev",
     "lint": "eslint ."
@@ -34,6 +37,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.0.1",
+    "gh-pages": "^6.0.0",
     "mocha": "^10.0.0",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1"
